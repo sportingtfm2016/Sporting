@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ibtnNuevoPlanEntrenamiento"
-        android:src="@drawable/nuevoPlanEntrenamiento"
+        android:src="@drawable/nuevoplanentrenamiento"
         android:background="@android:color/background_light"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -28,6 +28,6 @@
         android:layout_marginBottom="123dp"
         android:layout_alignEnd="@+id/ibtnNuevoPlanEntrenamiento"
         android:layout_alignParentStart="true"
-        android:src="@drawable/verPlanEntrenamiento"
+        android:src="@drawable/verplanentrenamiento"
         android:background="@android:color/background_light" />
 </RelativeLayout>

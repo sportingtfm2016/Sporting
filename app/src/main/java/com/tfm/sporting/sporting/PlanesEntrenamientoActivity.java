@@ -15,7 +15,8 @@ public class PlanesEntrenamientoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planes_entrenamiento);
-
+        ibtnNuevo = (ImageButton) findViewById(R.id.ibtnNuevoPlanEntrenamiento);
+        ibtnVer = (ImageButton) findViewById(R.id.ibtnVerPlanEntrenamiento);
         // Muestra la actividad para un nuevo plan de Entrenamiento
         ibtnNuevo.setOnClickListener(new View.OnClickListener() {
 
@@ -31,8 +32,8 @@ public class PlanesEntrenamientoActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent ActividadVerPlanes = new Intent(getApplicationContext(), PlanesEntrenamientoActivity.class);
-                startActivity(ActividadVerPlanes);
+                //Intent ActividadVerPlanes = new Intent(getApplicationContext(), PlanesEntrenamientoActivity.class);
+                //startActivity(ActividadVerPlanes);
             }
         });
     }

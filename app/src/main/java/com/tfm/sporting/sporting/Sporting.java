@@ -33,6 +33,9 @@ import java.util.List;
 public class Sporting extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public boolean cPebble = false;
+    public boolean cPulsometro = false;
+
     String coord;
     String sEjeX;
     String sEjeY;
@@ -49,8 +52,8 @@ public class Sporting extends AppCompatActivity
     private ArrayList<String> data;
     private Thread thread;
     private ArrayList z_buffer;
-    private int new_sample,old_sample;
-    private int min,max,ave,aux;
+    private int new_sample, old_sample;
+    private int min, max, ave, aux;
     private int steps;
     private int steps_each_2s;
     int z_ant = 0;
@@ -58,21 +61,23 @@ public class Sporting extends AppCompatActivity
     int x_ant = 0;
     float alpha = 0.7f;
     double A[] = new double[2];
-    double angle,q0,q1,q2;
+    double angle, q0, q1, q2;
     private int steps_past;
-    private float speed,calories,distance;
+    private float speed, calories, distance;
     private int time;
     private int value;
     private int samples;
-    private float weight,height;
+    private float weight, height;
     private Iterator<Integer> it;
-    private int sample_up,sample_down;
+    private int sample_up, sample_down;
 
-//pulsometro
-private final static String TAG = Sporting.class.getSimpleName();
+    //pulsometro
+    private final static String TAG = Sporting.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String FLAG_PEBBLE = "BTPEBBLE";
+    public static final String FLAG_PULSOMETRO = "BTPULSOMETRO";
 
     private TextView mConnectionState;
     private TextView mDataField;
@@ -94,7 +99,7 @@ private final static String TAG = Sporting.class.getSimpleName();
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(PebbleService.action_envio)) {
+            if (intent.getAction().equals(PebbleService.action_envio)) {
                 String prog = intent.getStringExtra("dato");
                 StringToInt(prog);
                 tvPasos.setText(String.valueOf(steps));
@@ -126,7 +131,7 @@ private final static String TAG = Sporting.class.getSimpleName();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent msgIntent = new Intent(getApplicationContext(),  PebbleService.class);
+                Intent msgIntent = new Intent(getApplicationContext(), PebbleService.class);
                 msgIntent.putExtra("prueba", 10);
                 startService(msgIntent);
                 //startService(new Intent(getApplicationContext(), PebbleService.class));
@@ -213,195 +218,203 @@ private final static String TAG = Sporting.class.getSimpleName();
 
     public void onResume() {
         super.onResume();
-        registerReceiver(receiver, mIntentFilter);
 
         final Intent intent = getIntent();
+        cPebble = intent.getBooleanExtra(FLAG_PEBBLE,false);
+        cPulsometro = intent.getBooleanExtra(FLAG_PULSOMETRO,false);
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
-
         mDataField = (TextView) findViewById(R.id.tvNumeroPulsaciones);
+
+        if (cPebble) {
+            registerReceiver(receiver, mIntentFilter);
+        }
+
+
         //getActionBar().setTitle(mDeviceName);
         //getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        if (mBluetoothLeService != null) {
-            final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
+        if (cPulsometro) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+            if (mBluetoothLeService != null) {
+                final boolean result = mBluetoothLeService.connect(mDeviceAddress);
+                Log.d(TAG, "Connect request result=" + result);
+            }
         }
     }
 
-    public void StringToInt (String texto){
+    public void StringToInt(String texto) {
         int i = 0;
         int sp1 = 0;
         int sp2 = 0;
 
-        while(i<texto.length()){
-            if(texto.charAt(i)=='y'){
+        while (i < texto.length()) {
+            if (texto.charAt(i) == 'y') {
                 sp1 = i;
             }
-            if(texto.charAt(i)=='z'){
+            if (texto.charAt(i) == 'z') {
                 sp2 = i;
             }
             i++;
         }
 
-        sEjeX = texto.substring(0,sp1);
-        sEjeY = texto.substring(sp1+1,sp2);
-        sEjeZ = texto.substring(sp2+1,texto.length());
+        sEjeX = texto.substring(0, sp1);
+        sEjeY = texto.substring(sp1 + 1, sp2);
+        sEjeZ = texto.substring(sp2 + 1, texto.length());
 
         EjeX = Integer.parseInt(sEjeX);
         EjeY = Integer.parseInt(sEjeY);
         EjeZ = Integer.parseInt(sEjeZ);
 
-        CoordToSteps(EjeX,EjeY,EjeZ);
+        CoordToSteps(EjeX, EjeY, EjeZ);
     }
 
-    public void CoordToSteps(int x, int y, int z){
+    public void CoordToSteps(int x, int y, int z) {
 
         //for (int i = 0; i < NUM_SAMPLES; i++) {
 
-            // Filter signal and rotate Pebble frame to body frame
-            z = filterAndRotate(x, y, z);
+        // Filter signal and rotate Pebble frame to body frame
+        z = filterAndRotate(x, y, z);
 
 
-            // Discard variations lower than 35 mili-g. High pass filter to reduce
-            // high frequency noise.
-            if (Math.abs(z - new_sample) > 35) {
-                old_sample = new_sample;
-                new_sample = z;
-            } else old_sample = new_sample;
+        // Discard variations lower than 35 mili-g. High pass filter to reduce
+        // high frequency noise.
+        if (Math.abs(z - new_sample) > 35) {
+            old_sample = new_sample;
+            new_sample = z;
+        } else old_sample = new_sample;
 
 
-            z_buffer.add(new_sample);
+        z_buffer.add(new_sample);
 
-            // Refresh variable threshold each 50 samples (10 msec)
-            if (z_buffer.size() == 250) {
+        // Refresh variable threshold each 50 samples (10 msec)
+        if (z_buffer.size() == 250) {
 
-                aux = min;
-                min = max;
-                max = aux;
+            aux = min;
+            min = max;
+            max = aux;
 
-                it = z_buffer.iterator();
-                while (it.hasNext()) {
-                    value = it.next();
-                    // Update max and min values
-                    if (value < min) min = value;
-                    if (value > max) max = value;
-                }
-                z_buffer.clear();
+            it = z_buffer.iterator();
+            while (it.hasNext()) {
+                value = it.next();
+                // Update max and min values
+                if (value < min) min = value;
+                if (value > max) max = value;
             }
-
-            // Calculate the average
-            ave = (min + max) / 2;
-
-
-            // Cross down to up the threshold
-            if (new_sample > ave && new_sample > old_sample) sample_up = samples;
-
-
-            // Cross up to down the threshold
-           if (old_sample > ave && ave > new_sample) {
-                sample_down = samples;
-
-                // Check time windows. If samples difference is between 10-100 samples then the step
-                // is between 0.2s - 2s for sampling frequency of 50Hz and the step is valid.
-                if (sample_down - sample_up > 10 && sample_down - sample_up < 100 && sample_down != 0) {
-
-                    steps++;
-
-                    // Restart variables
-                    samples = 0;
-                    sample_down = 0;
-                    sample_up = 0;
-                }
-            }
-
-            time++;
-
-            if (time % 100 == 0) {
-
-                steps_each_2s = steps - steps_past;
-                steps_past = steps;
-
-                switch (steps_each_2s) {
-                    case 0: case 1:
-                        distance += steps_each_2s * height / 5;
-                        speed = steps_each_2s * height / 10;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                    case 2:
-                        distance += steps_each_2s * height / 4;
-                        speed = steps_each_2s * height / 8;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-
-                        break;
-                    case 3:
-                        distance += steps_each_2s * height / 3;
-                        speed = steps_each_2s * height / 9;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                    case 4:
-                        distance += steps_each_2s * height / 2;
-                        speed = steps_each_2s * height / 4;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                    case 5:
-                        distance += steps_each_2s * height / 1.2f;
-                        speed = steps_each_2s * height / 2.4f;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                    case 6:
-                    case 7:
-                        distance += steps_each_2s * height;
-                        speed = steps_each_2s * height;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                    default:
-                        distance += steps_each_2s * height * 1.2f;
-                        speed = steps_each_2s * height * 2.4f;
-                        if (speed != 0) calories += speed * weight / 400;
-                        else calories += weight / 1800;
-                        break;
-                }
-            }
-
-            // Restart counter each 100 samples (2sec)
-            if (samples < 100) samples++;
-            else samples = 0;
-
+            z_buffer.clear();
         }
-   // }
 
-    public int filterAndRotate(int x,int y,int z){
+        // Calculate the average
+        ave = (min + max) / 2;
+
+
+        // Cross down to up the threshold
+        if (new_sample > ave && new_sample > old_sample) sample_up = samples;
+
+
+        // Cross up to down the threshold
+        if (old_sample > ave && ave > new_sample) {
+            sample_down = samples;
+
+            // Check time windows. If samples difference is between 10-100 samples then the step
+            // is between 0.2s - 2s for sampling frequency of 50Hz and the step is valid.
+            if (sample_down - sample_up > 10 && sample_down - sample_up < 100 && sample_down != 0) {
+
+                steps++;
+
+                // Restart variables
+                samples = 0;
+                sample_down = 0;
+                sample_up = 0;
+            }
+        }
+
+        time++;
+
+        if (time % 100 == 0) {
+
+            steps_each_2s = steps - steps_past;
+            steps_past = steps;
+
+            switch (steps_each_2s) {
+                case 0:
+                case 1:
+                    distance += steps_each_2s * height / 5;
+                    speed = steps_each_2s * height / 10;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+                case 2:
+                    distance += steps_each_2s * height / 4;
+                    speed = steps_each_2s * height / 8;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+
+                    break;
+                case 3:
+                    distance += steps_each_2s * height / 3;
+                    speed = steps_each_2s * height / 9;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+                case 4:
+                    distance += steps_each_2s * height / 2;
+                    speed = steps_each_2s * height / 4;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+                case 5:
+                    distance += steps_each_2s * height / 1.2f;
+                    speed = steps_each_2s * height / 2.4f;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+                case 6:
+                case 7:
+                    distance += steps_each_2s * height;
+                    speed = steps_each_2s * height;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+                default:
+                    distance += steps_each_2s * height * 1.2f;
+                    speed = steps_each_2s * height * 2.4f;
+                    if (speed != 0) calories += speed * weight / 400;
+                    else calories += weight / 1800;
+                    break;
+            }
+        }
+
+        // Restart counter each 100 samples (2sec)
+        if (samples < 100) samples++;
+        else samples = 0;
+
+    }
+    // }
+
+    public int filterAndRotate(int x, int y, int z) {
 
         // Filter data using IIR Filter order 1
-        x = Math.round((1-alpha)*x+alpha*x_ant);
+        x = Math.round((1 - alpha) * x + alpha * x_ant);
         x_ant = x;
 
-        y = Math.round((1-alpha)*y+alpha*y_ant);
+        y = Math.round((1 - alpha) * y + alpha * y_ant);
         y_ant = y;
 
-        z = Math.round((1-alpha)*z+alpha*z_ant);
+        z = Math.round((1 - alpha) * z + alpha * z_ant);
         z_ant = z;
 
         // Calcule the angle between accelerometer frame and body frame
-        A[0] = -y/Math.sqrt(x*x+y*y);
-        A[1] = -A[0]*x/y;
-        angle = (Math.acos(-z/Math.sqrt(x*x+y*y+z*z)))/2;
+        A[0] = -y / Math.sqrt(x * x + y * y);
+        A[1] = -A[0] * x / y;
+        angle = (Math.acos(-z / Math.sqrt(x * x + y * y + z * z))) / 2;
 
         // Build quaternion Q = {q0,q1,q2,0}
         q0 = Math.cos(angle);
-        q1 = Math.sin(angle)*A[0];
-        q2 = Math.sin(angle)*A[1];
+        q1 = Math.sin(angle) * A[0];
+        q2 = Math.sin(angle) * A[1];
 
         // Rotate vector through rotation matrix
-        z = (int)(2*q0*(q1*y-q2*x)+z*(1-2*(q1*q1+q2*q2)));
+        z = (int) (2 * q0 * (q1 * y - q2 * x) + z * (1 - 2 * (q1 * q1 + q2 * q2)));
 
         return z;
     }
@@ -469,7 +482,7 @@ private final static String TAG = Sporting.class.getSimpleName();
                     LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             int valor1 = uuid.compareTo("0000180d-0000-1000-8000-00805f9b34fb");
-            if(valor1 ==0) {
+            if (valor1 == 0) {
                 gattServiceData.add(currentServiceData);
 
                 ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
@@ -481,7 +494,7 @@ private final static String TAG = Sporting.class.getSimpleName();
 
                 // Loops through available Characteristics.
                 for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-                    if(gattCharacteristic.getUuid().toString().compareTo("00002a37-0000-1000-8000-00805f9b34fb")==0) {
+                    if (gattCharacteristic.getUuid().toString().compareTo("00002a37-0000-1000-8000-00805f9b34fb") == 0) {
                         charas.add(gattCharacteristic);
                         HashMap<String, String> currentCharaData = new HashMap<String, String>();
                         uuid = gattCharacteristic.getUuid().toString();
@@ -525,12 +538,12 @@ private final static String TAG = Sporting.class.getSimpleName();
                 this,
                 gattServiceData,
                 android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 },
+                new String[]{LIST_NAME, LIST_UUID},
+                new int[]{android.R.id.text1, android.R.id.text2},
                 gattCharacteristicData,
                 android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 }
+                new String[]{LIST_NAME, LIST_UUID},
+                new int[]{android.R.id.text1, android.R.id.text2}
         );
         //mGattServicesList.setAdapter(gattServiceAdapter);
     }

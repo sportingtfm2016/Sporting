@@ -148,9 +148,9 @@ public class DeviceScanActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
-        final Intent intent = new Intent(this, Sporting.class);
-        intent.putExtra(Sporting.EXTRAS_DEVICE_NAME, device.getName());
-        intent.putExtra(Sporting.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        final Intent intent = new Intent(this, BTActivity.class);
+        intent.putExtra(BTActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(BTActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mScanning = false;
