@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.tfm.sporting.sporting.PerfilActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:id="@+id/btnGuardarPerfil"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Perfil"
+        android:id="@+id/tvTituloPerfil"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Nombre"
+        android:id="@+id/tvNombrePerfil"
+        android:layout_below="@+id/tvTituloPerfil"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="41dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Condición física"
+        android:id="@+id/tvCondicionFisica"
+        android:layout_marginTop="51dp"
+        android:layout_below="@+id/tvNombrePerfil"
+        android:layout_toStartOf="@+id/btnGuardarPerfil" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/etNombrePerfil"
+        android:layout_above="@+id/tvCondicionFisica"
+        android:layout_toEndOf="@+id/tvCondicionFisica" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Edad"
+        android:id="@+id/tvEdad"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/tvCondicionFisica" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/etEdad"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/tvCondicionFisica" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spCondicionFisica"
+        android:spinnerMode="dropdown"
+        android:layout_alignTop="@+id/tvCondicionFisica"
+        android:layout_alignStart="@+id/tvTituloPerfil" />
+
+</RelativeLayout>

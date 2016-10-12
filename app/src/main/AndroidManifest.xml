@@ -50,7 +50,8 @@
             android:exported="true" />
 
         <activity android:name=".PlanesEntrenamientoActivity" />
-        <activity android:name=".NuevoPlanEntrenamientoActivity"></activity>
+        <activity android:name=".NuevoPlanEntrenamientoActivity" />
+        <activity android:name=".PerfilActivity"></activity>
     </application>
 
 </manifest>
