@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.tfm.sporting.sporting.BTActivity">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:text="CONEXION ACCESORIOS"
+        android:id="@+id/tvTituloBt"
+        android:layout_gravity="center_horizontal|top"
+        android:textColor="@color/material_blue_grey_800"
+        android:textSize="50px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Conexión de Pebble"
+        android:id="@+id/tvTituloConexionPebble"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_alignBottom="@+id/tvTituloBt"
+        android:layout_centerHorizontal="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Habilitar comunicación  "
+        android:id="@+id/swPebble"
+        android:layout_gravity="center_horizontal|top"
+        android:checked="false"
+        android:layout_below="@+id/tvTituloConexionPebble"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Estado de la conexión"
+        android:id="@+id/tvTituloEstadoConexión"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/swPebble"
+        android:layout_alignRight="@+id/tvTituloConexionPebble"
+        android:layout_alignEnd="@+id/tvTituloConexionPebble" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="NO CONECTADO - NO HABILITADO"
+        android:id="@+id/tvEstadoConectado"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/tvTituloEstadoConexión"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aceptar"
+        android:id="@+id/btnAceptarConfigBT"
+        android:layout_marginBottom="29dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Conexión con pulsómetro"
+        android:id="@+id/tvTituloConexionPulsometro"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="46dp"
+        android:layout_below="@+id/tvEstadoConectado"
+        android:layout_centerHorizontal="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Habilitar comunicación  "
+        android:id="@+id/swPulsometro"
+        android:layout_gravity="center_horizontal|top"
+        android:checked="false"
+        android:layout_below="@+id/tvTituloConexionPulsometro"
+        android:layout_alignLeft="@+id/tvTituloConexionPulsometro"
+        android:layout_alignStart="@+id/tvTituloConexionPulsometro"
+        android:layout_marginTop="30dp" />
+</RelativeLayout>

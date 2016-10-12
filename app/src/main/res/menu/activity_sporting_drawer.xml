@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_actividad"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Actividad" />
+        <item
+            android:id="@+id/nav_actividades"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Historial de Actividades" />
+        <item
+            android:id="@+id/nav_objetivos"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Objetivos" />
+        <item
+            android:id="@+id/nav_planes"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Planes de Entrenamiento" />
+    </group>
+
+    <item android:title="Ajustes">
+        <menu>
+            <item
+                android:id="@+id/nav_perfil"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Perfil" />
+            <item
+                android:id="@+id/nav_conexiones"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Conexiones" />
+        </menu>
+    </item>
+
+</menu>
